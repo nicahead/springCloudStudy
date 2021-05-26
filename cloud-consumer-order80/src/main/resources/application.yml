@@ -1,0 +1,6 @@
+server:
+  port: 80
+spring:
+  # 微服务名称
+  application:
+    name: cloud-order
