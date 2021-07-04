@@ -5,6 +5,7 @@ import me.nic.cloud.dto.CommonResult;
 import me.nic.cloud.entities.Payment;
 import me.nic.cloud.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.*;
@@ -21,10 +22,13 @@ public class PaymentController {
     @Autowired
     private DiscoveryClient discoveryClient;
 
+    @Value("${server.port}")
+    private String serverPort;
+
     @GetMapping("/payment/get/{id}")
     public CommonResult<Payment> get(@PathVariable("id") Long id) {
         Payment paymentById = paymentService.getPaymentById(id);
-        return new CommonResult<>(200, "查询成功", paymentById);
+        return new CommonResult<>(200, "查询成功 server port:" + serverPort, paymentById);
     }
 
     @PostMapping("/payment/save")
@@ -48,5 +52,10 @@ public class PaymentController {
             log.info("serviceId:[{}], 主机名称:[{}], 端口号:[{}], url地址:[{}]", instance.getServiceId(), instance.getHost(), instance.getPort(), instance.getUri());
         }
         return this.discoveryClient;
+    }
+
+    @RequestMapping("/get/lb")
+    public String getLBid(){
+        return serverPort;
     }
 }
